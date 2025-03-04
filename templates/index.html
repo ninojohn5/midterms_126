@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Face Blur</title>
+    
+    <!-- External Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --primary-color: #008f5a;
+            --secondary-color: #005f8f;
+            --bg-color: #0a0a0a;
+            --container-bg: #1a1a1a;
+            --text-color: #ffffff;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            border-radius: 15px;
+            background: var(--container-bg);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease-in-out;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .video-container {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        #video-stream {
+            width: 100%;
+            display: block;
+            border-radius: 10px;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-custom {
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            color: #fff;
+        }
+
+        .btn-on {
+            background: var(--primary-color);
+        }
+
+        .btn-on:hover {
+            background: #007040;
+        }
+
+        .btn-off {
+            background: #8f0000;
+        }
+
+        .btn-off:hover {
+            background: #5f0000;
+        }
+
+        .notification {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 25px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: none;
+            background: var(--secondary-color);
+            color: #ffffff;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Real-Time Face Blur</h1>
+        <div class="video-container">
+            <img id="video-stream" src="{{ url_for('video_feed') }}" alt="Video Stream">
+        </div>
+        <div class="btn-container">
+            <button id="blurOn" class="btn-custom btn-on">Turn ON Blur</button>
+            <button id="blurOff" class="btn-custom btn-off">Turn OFF Blur</button>
+        </div>
+        <div id="notification" class="notification"></div>
+        <p class="footer">Powered by OpenCV & Flask</p>
+    </div>
+
+    <!-- JavaScript Functionality -->
+    <script>
+        $(document).ready(function() {
+            function toggleBlur(status, message) {
+                $.get(`/toggle_blur?status=${status}`, function() {
+                    $('#notification').text(message).fadeIn().delay(100).fadeOut();
+                    console.log(message);
+                });
+            }
+
+            $('#blurOn').click(() => toggleBlur("on", "Face Blur is ON"));
+            $('#blurOff').click(() => toggleBlur("off", "Face Blur is OFF"));
+        });
+    </script>
+</body>
+</html>
